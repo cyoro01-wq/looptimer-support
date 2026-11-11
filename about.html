@@ -2,72 +2,196 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>ループタイマー - HIIT</title>
   <meta name="description" content="運動と休憩をくり返すだけの、シンプルなインターバルタイマー。Apple Watch とダイナミックアイランドに対応。">
+  <meta name="theme-color" content="#0d0f12">
+  <meta property="og:title" content="Loop Timer - HIIT">
+  <meta property="og:description" content="運動と休憩をくり返すだけの、シンプルなインターバルタイマー。">
+  <meta property="og:image" content="https://cyoro01-wq.github.io/looptimer-support/img/iphone-3.jpg">
   <style>
-    :root { color-scheme: light dark; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
-    body { margin: 0; line-height: 1.7; }
-    main { max-width: 760px; margin: 0 auto; padding: 48px 24px 72px; }
-    header { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
-    header img { width: 96px; height: 96px; border-radius: 22px; }
-    h1 { font-size: 2rem; margin: 0; }
-    h2 { margin-top: 2rem; font-size: 1.25rem; }
-    .muted { color: #777; }
-    a { color: #1671c5; }
-    .button { display: inline-block; margin-top: 1.25rem; padding: .6rem 1.2rem; border-radius: 10px; background: #1671c5; color: #fff; text-decoration: none; font-weight: 600; }
-    hr { border: 0; border-top: 1px solid #8883; margin: 3rem 0; }
-    .note { font-size: .9rem; }
+    :root {
+      --bg: #0d0f12;
+      --card: #171a1f;
+      --line: #262a31;
+      --text: #f2f4f5;
+      --muted: #9aa1aa;
+      --lime: #d9f73c;
+      --red: #ff5a4f;
+      --teal: #3ddfc0;
+      --amber: #ffb020;
+      color-scheme: dark;
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+    a { color: var(--lime); }
+    .wrap { max-width: 1040px; margin: 0 auto; padding: 0 20px; }
+
+    /* ヒーロー */
+    .hero { padding: 56px 0 24px; background: radial-gradient(900px 480px at 75% 10%, #3a1d1b 0%, transparent 60%), radial-gradient(700px 420px at 15% 90%, #10302a 0%, transparent 60%); }
+    .hero-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 40px; align-items: center; }
+    .brand { display: flex; align-items: center; gap: 14px; }
+    .brand img { width: 64px; height: 64px; border-radius: 15px; }
+    .brand span { font-weight: 700; color: var(--muted); }
+    h1 { font-size: clamp(1.8rem, 6vw, 3.4rem); line-height: 1.15; margin: 20px 0 12px; letter-spacing: -.01em; }
+    h1 em { font-style: normal; color: var(--lime); }
+    h1 span { display: inline-block; }
+    .lead { font-size: 1.1rem; color: var(--muted); margin: 0 0 24px; }
+    .cta { display: inline-flex; align-items: center; gap: 10px; padding: 14px 26px; border-radius: 999px; background: var(--lime); color: #111; font-weight: 800; text-decoration: none; box-shadow: 0 0 32px #d9f73c55; }
+    .cta:hover { filter: brightness(1.05); }
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+    .tags span { font-size: .85rem; padding: 4px 12px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); color: var(--muted); }
+
+    /* 動画（端末の枠） */
+    .phone { justify-self: center; width: min(300px, 72vw); aspect-ratio: 1206 / 2622; border-radius: 46px; padding: 10px; background: #000; border: 2px solid #2b2f36; box-shadow: 0 30px 80px #000a, 0 0 0 6px #14171b; }
+    .phone video { width: 100%; height: 100%; border-radius: 37px; display: block; object-fit: cover; background: #000; }
+
+    section { padding: 56px 0 8px; }
+    h2 { font-size: 1.6rem; margin: 0 0 8px; }
+    .sub { color: var(--muted); margin: 0 0 28px; }
+
+    /* スクリーンショット */
+    .shots { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(200px, 1fr); gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 12px; }
+    .shots figure { margin: 0; scroll-snap-align: start; }
+    .shots img { width: 100%; border-radius: 22px; border: 1px solid var(--line); display: block; }
+    .shots figcaption { font-size: .85rem; color: var(--muted); margin-top: 8px; text-align: center; }
+
+    /* 特長 */
+    .features { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+    .feature { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 20px; }
+    .feature h3 { margin: 0 0 6px; font-size: 1.05rem; display: flex; align-items: center; gap: 10px; }
+    .feature h3::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--dot, var(--lime)); box-shadow: 0 0 10px var(--dot, var(--lime)); flex: none; }
+    .feature p { margin: 0; color: var(--muted); font-size: .95rem; }
+
+    /* Apple Watch */
+    .watch { display: grid; grid-template-columns: auto 1fr; gap: 28px; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: 24px; padding: 24px; }
+    .watch-imgs { display: flex; gap: 12px; }
+    .watch-imgs img { width: 150px; border-radius: 34px; border: 6px solid #000; box-shadow: 0 0 0 2px #2b2f36; }
+    .watch p { color: var(--muted); margin: 0; }
+
+    /* 料金 */
+    .plans { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .plan { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 22px; }
+    .plan.pro { border-color: #d9f73c88; box-shadow: 0 0 40px #d9f73c18; }
+    .plan h3 { margin: 0 0 4px; }
+    .plan .price { color: var(--lime); font-weight: 800; margin: 0 0 10px; }
+    .plan ul { margin: 0; padding-left: 1.2em; color: var(--muted); }
+
+    .note { font-size: .85rem; color: var(--muted); }
+    hr { border: 0; border-top: 1px solid var(--line); margin: 56px 0; }
+    footer { padding: 32px 0 56px; color: var(--muted); font-size: .9rem; }
+    footer a { color: var(--text); }
+
+    @media (max-width: 760px) {
+      .hero { padding-top: 36px; }
+      .hero-grid { grid-template-columns: 1fr; gap: 32px; }
+      .plans { grid-template-columns: 1fr; }
+      .watch { grid-template-columns: 1fr; }
+      .watch-imgs img { width: calc(50% - 6px); }
+      .shots { grid-auto-columns: 62%; }
+    }
+    @media (prefers-reduced-motion: reduce) { .phone video { display: none; } .phone { background: #000 url(demo-poster.jpg) center/cover; } }
   </style>
 </head>
 <body>
-  <main>
-    <header>
-      <img src="icon.png" alt="ループタイマーのアイコン">
+  <header class="hero">
+    <div class="wrap hero-grid">
       <div>
-        <h1>ループタイマー - HIIT</h1>
-        <p class="muted" style="margin:0">運動と休憩をくり返すだけの、シンプルなインターバルタイマー</p>
+        <div class="brand"><img src="icon.png" alt=""><span>Loop Timer - HIIT</span></div>
+        <h1><span>運動と休憩を、</span><br><em><span>自動で</span><span>くり返す。</span></em></h1>
+        <p class="lead">タバタ、HIIT、サーキット、筋トレのセット管理まで。時間を決めてスタートするだけの、シンプルなインターバルタイマーです。</p>
+        <a class="cta" href="https://apps.apple.com/app/id6809250898">App Store で入手</a>
+        <div class="tags"><span>iPhone</span><span>Apple Watch</span><span>ダイナミックアイランド</span><span>ヘルスケア</span><span>9言語</span></div>
       </div>
-    </header>
-    <a class="button" href="https://apps.apple.com/app/id6809250898">App Store で見る</a>
+      <div class="phone">
+        <video src="demo.mp4" poster="demo-poster.jpg" autoplay muted loop playsinline aria-label="タイマーを動かしている画面の動画"></video>
+      </div>
+    </div>
+  </header>
 
-    <p>タバタ、HIIT、サーキットトレーニング、ストレッチ、筋トレのセット管理まで。時間を決めてスタートするだけで、運動と休憩を自動でくり返します。</p>
+  <main class="wrap">
+    <section>
+      <h2>画面</h2>
+      <p class="sub">準備はオレンジ、運動は赤、休憩は緑。色でいまのフェーズが一目で分かります。</p>
+      <div class="shots">
+        <figure><img src="img/iphone-1.jpg" alt="トップ画面" loading="lazy"><figcaption>プリセットを選んでスタート</figcaption></figure>
+        <figure><img src="img/iphone-2.jpg" alt="時間とリズムの設定" loading="lazy"><figcaption>秒単位の設定とリズム</figcaption></figure>
+        <figure><img src="img/iphone-3.jpg" alt="円グラフ表示" loading="lazy"><figcaption>円グラフ表示</figcaption></figure>
+        <figure><img src="img/iphone-4.jpg" alt="棒グラフ表示" loading="lazy"><figcaption>棒グラフ表示</figcaption></figure>
+        <figure><img src="img/iphone-5.jpg" alt="数字表示" loading="lazy"><figcaption>数字だけの大きな表示</figcaption></figure>
+        <figure><img src="img/iphone-6.jpg" alt="設定画面" loading="lazy"><figcaption>テーマ・音・ヘルスケア</figcaption></figure>
+      </div>
+    </section>
 
-    <h2>主な特長</h2>
-    <ul>
-      <li><strong>ダイナミックアイランドとロック画面に表示</strong> — 他のアプリを使っていても残り時間が見え、画面を消しても音とバイブで区切りを知らせます。</li>
-      <li><strong>Apple Watch</strong> — 手首から開始・一時停止・スキップ。iPhone と同じ残り時間を表示し、心拍数も見られます。</li>
-      <li><strong>ヘルスケアに記録</strong> — セッションを HIIT のワークアウトとして記録し、アプリ内で履歴を確認できます。</li>
-      <li><strong>3種類の表示</strong> — 数字・円グラフ・棒グラフ。実行中でも切り替えられます。</li>
-      <li><strong>音と声</strong> — 音量と音の種類を選べ、開始・終了を声でも知らせます。BPM に合わせたリズム音も鳴らせます。</li>
-      <li><strong>すぐ使えるプリセット</strong> — タバタ、HIIT、4020、EMOM。</li>
-      <li><strong>9言語</strong> — 日本語、英語、中国語（簡体・繁体）、韓国語、スペイン語、ドイツ語、フランス語、ポルトガル語。</li>
-    </ul>
+    <section>
+      <h2>主な特長</h2>
+      <p class="sub">トレーニング中に必要なことだけを、大きく、分かりやすく。</p>
+      <div class="features">
+        <div class="feature" style="--dot: var(--lime)"><h3>ダイナミックアイランド</h3><p>他のアプリを使っていても残り時間とフェーズが見えます。ロック画面にも表示。</p></div>
+        <div class="feature" style="--dot: var(--red)"><h3>画面を消しても止まらない</h3><p>区切りは音とバイブでお知らせ。開始・終了は声でも知らせます。</p></div>
+        <div class="feature" style="--dot: var(--teal)"><h3>3種類の表示</h3><p>数字・円グラフ・棒グラフ。実行中でもボタンひとつで切り替え。</p></div>
+        <div class="feature" style="--dot: var(--amber)"><h3>リズムに合わせて</h3><p>BPM 40〜240 と拍子を選んで、動きのペースをそろえられます。</p></div>
+        <div class="feature" style="--dot: var(--teal)"><h3>ヘルスケアに記録</h3><p>HIIT のワークアウトとして記録。アプリ内で履歴を確認できます。</p></div>
+        <div class="feature" style="--dot: var(--lime)"><h3>すぐ使えるプリセット</h3><p>タバタ、HIIT、4020、EMOM。1秒刻みで自分用にも。</p></div>
+      </div>
+    </section>
 
-    <h2>無料版と有料版</h2>
-    <p>無料のままでも4つのプリセットをすべて使えます。無料版ではトップ画面に広告が表示されます。</p>
-    <p>買い切りの追加機能（サブスクリプションはありません）で、時間の変更、設定の保存、音の設定、Apple Watch アプリ、ヘルスケアへの記録、リズム、音声ガイドが使えるようになり、広告も表示されなくなります。</p>
+    <section>
+      <h2>Apple Watch</h2>
+      <div class="watch">
+        <div class="watch-imgs">
+          <img src="img/watch-1.png" alt="Apple Watch のスタート画面" loading="lazy">
+          <img src="img/watch-2.png" alt="Apple Watch の実行中画面" loading="lazy">
+        </div>
+        <p>iPhone を置いたまま、手首から開始・一時停止・スキップ。区切りは手首の振動で伝わります。iPhone と同じ残り時間を表示し、運動中の心拍数も見られます。</p>
+      </div>
+    </section>
 
-    <p class="note muted">このアプリは運動の時間を計るためのものです。表示される心拍数などの情報は、医師による診断・治療の代わりにはなりません。</p>
-
-    <h2>リンク</h2>
-    <p><a href="./">サポート</a> ・ <a href="privacy.html">プライバシーポリシー</a></p>
+    <section>
+      <h2>無料版と有料版</h2>
+      <div class="plans">
+        <div class="plan">
+          <h3>無料</h3>
+          <p class="price">¥0</p>
+          <ul>
+            <li>4つのプリセットをすべて実行</li>
+            <li>表示の切り替え・ダイナミックアイランド</li>
+            <li>トップ画面に広告が表示されます</li>
+          </ul>
+        </div>
+        <div class="plan pro">
+          <h3>すべての機能を解放</h3>
+          <p class="price">買い切り（サブスクリプションなし）</p>
+          <ul>
+            <li>時間の変更・自分の設定の保存</li>
+            <li>音の設定・音声ガイド・リズム</li>
+            <li>Apple Watch アプリとヘルスケアへの記録</li>
+            <li>広告なし</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note">このアプリは運動の時間を計るためのものです。表示される心拍数などの情報は、医師による診断・治療の代わりにはなりません。</p>
+    </section>
 
     <hr>
 
-    <h2>Loop Timer - HIIT</h2>
-    <p>A simple interval timer that loops work and rest. Set your times, tap start, and it loops automatically — for Tabata, HIIT, circuit training, stretching, or timing sets at the gym.</p>
-    <ul>
-      <li><strong>Dynamic Island and Lock Screen</strong> — see the remaining time while using other apps; cues keep playing with the screen locked.</li>
-      <li><strong>Apple Watch</strong> — start, pause and skip from your wrist, with live heart rate.</li>
-      <li><strong>Apple Health</strong> — sessions are saved as HIIT workouts, with an in-app history.</li>
-      <li><strong>Three counter styles</strong>, selectable sounds, voice cues and a metronome rhythm.</li>
-      <li><strong>Ready-made presets</strong> — Tabata, HIIT, 4020 and EMOM. Available in nine languages.</li>
-    </ul>
-    <p>The free version runs all four presets and shows a banner ad on the main screen. A one-time purchase (no subscription) unlocks every feature and removes ads.</p>
-    <p class="note muted">This app times your workouts. Heart rate and other information it shows are not a substitute for medical diagnosis or treatment.</p>
-    <p><a class="button" href="https://apps.apple.com/app/id6809250898">View on the App Store</a></p>
-    <p><a href="./">Support</a> · <a href="privacy.html">Privacy policy</a></p>
+    <section lang="en" style="padding-top:0">
+      <h2>Loop Timer - HIIT</h2>
+      <p class="sub">A simple interval timer that loops work and rest — for Tabata, HIIT, circuits and gym sets.</p>
+      <div class="features">
+        <div class="feature" style="--dot: var(--lime)"><h3>Dynamic Island</h3><p>See the remaining time while using other apps, and on the Lock Screen.</p></div>
+        <div class="feature" style="--dot: var(--red)"><h3>Keeps running</h3><p>Sound, haptics and voice cues keep going with the screen locked.</p></div>
+        <div class="feature" style="--dot: var(--teal)"><h3>Apple Watch &amp; Health</h3><p>Control from your wrist with live heart rate; sessions are saved as HIIT workouts.</p></div>
+      </div>
+      <p>The free version runs all four presets and shows a banner ad on the main screen. A one-time purchase (no subscription) unlocks every feature and removes ads.</p>
+      <p class="note">This app times your workouts. Heart rate and other information it shows are not a substitute for medical diagnosis or treatment.</p>
+      <p><a class="cta" href="https://apps.apple.com/app/id6809250898">Download on the App Store</a></p>
+    </section>
   </main>
+
+  <footer class="wrap">
+    <a href="./">サポート / Support</a> ・ <a href="privacy.html">プライバシーポリシー / Privacy</a>
+  </footer>
 </body>
 </html>
